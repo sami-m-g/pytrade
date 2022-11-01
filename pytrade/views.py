@@ -8,7 +8,7 @@ from pytrade.utils.trader import Trader
 def index():
     return render_template("index.html")
 
-@app.route("/trade/", methods = ["POST"])
+@app.route("/trade/", methods=["GET", "POST"])
 def trade():
     Trader(
         williams_short_lookback=int(request.form["williams_short_lookback"]),
