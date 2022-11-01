@@ -1,8 +1,8 @@
 import pandas as pd
 
-from pytrade.utils.loader import YahooFinanceLoader
-from pytrade.utils.williams import Williams
-from pytrade.utils.writer import GoogleSheetsWriter
+from pytrade.loader import YahooFinanceLoader
+from pytrade.williams import Williams
+from pytrade.writer import GoogleSheetsWriter
 
 
 class Trader:

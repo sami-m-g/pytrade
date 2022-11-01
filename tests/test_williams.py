@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from pytrade.utils.williams import Williams, WilliamsPosition, WilliamsStatus
+from pytrade.williams import Williams, WilliamsPosition, WilliamsStatus
 
 
 class TestWilliams(unittest.TestCase):

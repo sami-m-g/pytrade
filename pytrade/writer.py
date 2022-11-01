@@ -2,7 +2,7 @@ import gspread
 import gspread_dataframe
 import pandas as pd
 
-from pytrade.utils.secrets import ClientSecret
+from pytrade.secrets import ClientSecret
 
 
 class GoogleSheetsWriter:
