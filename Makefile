@@ -1,6 +1,5 @@
 init:
     pip install -r requirements.txt
-	.\scripts\ExportEnvVars.ps1
 
 test:
 	python -m pytest
