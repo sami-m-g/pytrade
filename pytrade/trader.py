@@ -50,13 +50,15 @@ class Trader:
         williams = Williams(
             data, self.williams_short_lookback, self.williams_short_overbought, self.williams_short_oversold, self.williams_nmovements
         )
-        return [[ticker, interval, williams.get_last_interval(), "short_williams", williams.get_status(), williams.get_position(), williams.get_movements()]]
+        name = f"short_williams_{self.williams_short_lookback}_{self.williams_short_overbought}_{self.williams_short_oversold}"
+        return [[ticker, interval, williams.get_last_interval(), name, williams.get_status(), williams.get_position(), williams.get_movements()]]
 
     def get_long_williams(self, data: pd.DataFrame, ticker: str, interval: str) -> list[list[any]]:
         williams = Williams(
             data, self.williams_long_lookback, self.williams_long_overbought, self.williams_long_oversold, self.williams_nmovements
         )
-        return [[ticker, interval, williams.get_last_interval(), "long_williams", williams.get_status(), williams.get_position(), williams.get_movements()]]
+        name = f"long_williams_{self.williams_long_lookback}_{self.williams_long_overbought}_{self.williams_long_oversold}"
+        return [[ticker, interval, williams.get_last_interval(), name, williams.get_status(), williams.get_position(), williams.get_movements()]]
 
     def trade(self) -> None:
         output_fields = ["ticker", "interval", "last_interval", "signal", "status", "position", "movements"]
