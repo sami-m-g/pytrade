@@ -57,8 +57,8 @@ class Trader:
         output_fields = ["ticker", "interval", "last_interval", "signal", "status", "position", "movements"]
         output_df = pd.DataFrame([], columns=output_fields)
 
-        for ticker in self.tickers[:1]:
-            for interval in self.intervals[:1]:
+        for ticker in self.tickers:
+            for interval in self.intervals:
                 data = YahooFinanceLoader.get_historical_data(ticker, self.period, interval)
                 short_williams_data = self.get_short_williams(data, ticker, interval)
                 long_williams_data = self.get_long_williams(data, ticker, interval)
