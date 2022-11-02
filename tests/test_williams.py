@@ -11,17 +11,17 @@ class TestWilliams(unittest.TestCase):
         index = pd.Index(rows, name="Date")
         return pd.DataFrame(rows, columns=data_columns, index=index)
     
-    def test_get_status_buy(self) -> None:
+    def test_get_status_sell(self) -> None:
         rows = [[2, 1, 1.9], [2, 1, 1.7]]
         data = self.get_data(rows)
         williams = Williams(data=data, lookback=1, overbought=-20, oversold=-80, movements=0)
-        self.assertEqual(WilliamsStatus.BUY.name, williams.get_status())
+        self.assertEqual(WilliamsStatus.SELL.name, williams.get_status())
     
-    def test_get_status_sell(self) -> None:
+    def test_get_status_buy(self) -> None:
         rows = [[2, 1, 1.1], [2, 1, 1.5]]
         data = self.get_data(rows)
         williams = Williams(data=data, lookback=1, overbought=-20, oversold=-80, movements=0)
-        self.assertEqual(WilliamsStatus.SELL.name, williams.get_status())
+        self.assertEqual(WilliamsStatus.BUY.name, williams.get_status())
 
     def test_get_status_gray(self) -> None:
         rows = [[2, 1, 1.3], [2, 1, 1.5]]
