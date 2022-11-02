@@ -2,7 +2,7 @@ import pandas as pd
 
 from pytrade.loader import YahooFinanceLoader
 from pytrade.williams import Williams
-from pytrade.writer import GoogleSheetsWriter
+from pytrade.helpers import GoogleSheetsHelper
 
 
 class Trader:
@@ -26,9 +26,14 @@ class Trader:
         self, tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
         williams_short_lookback: int = 20, williams_short_overbought: int = -20, williams_short_oversold: int = -80,
         williams_long_lookback: int = 50, williams_long_overbought: int = -20, williams_long_oversold: int = -80,
-        williams_nmovements: int = 4, google_spreadsheet_title: str = "StartInvesting", google_worksheet_title: str = "SIGNALS"
+        williams_nmovements: int = 4, google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
+        google_tickers_worksheet_title: str = "Tickers"
     ) -> "Trader":
-        self.tickers = tickers
+        if tickers is None:
+            self.tickers = GoogleSheetsHelper.read_tickers(google_spreadsheet_title, google_tickers_worksheet_title)
+        else:
+            self.tickers = tickers
+
         self.intervals = intervals
         self.period = period
         self.williams_short_lookback = williams_short_lookback
@@ -39,7 +44,7 @@ class Trader:
         self.williams_long_oversold = williams_long_oversold
         self.williams_nmovements = williams_nmovements
         self.google_spreadsheet_title = google_spreadsheet_title
-        self.google_worksheet_title = google_worksheet_title
+        self.google_out_worksheet_title = google_out_worksheet_title
     
     def get_short_williams(self, data: pd.DataFrame, ticker: str, interval: str) -> list[list[any]]:
         williams = Williams(
@@ -68,4 +73,4 @@ class Trader:
                     pd.DataFrame(long_williams_data, columns=output_fields)
                 ]) 
 
-        GoogleSheetsWriter.write_data(output_df, self.google_spreadsheet_title, self.google_worksheet_title)
+        GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)

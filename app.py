@@ -12,6 +12,7 @@ def index():
 @app.route("/trade", methods=["POST"])
 def trade():
     Trader(
+        tickers=None,
         williams_short_lookback=int(request.form["williams_short_lookback"]),
         williams_short_overbought=int(request.form["williams_short_overbought"]),
         williams_short_oversold=int(request.form["williams_short_oversold"]),
