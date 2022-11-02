@@ -56,12 +56,12 @@ jobs:
 
       - name: Export environment variables to .env file
         run: |
-          echo CLIENT_SECRET_PROJECT_ID=${{ secrets.CLIENT_SECRET_PROJECT_ID }} >> .env
-          echo CLIENT_SECRET_PRIIVATE_KEY_ID=${{ secrets.CLIENT_SECRET_PRIIVATE_KEY_ID }} >> .env
-          echo CLIENT_SECRET_PRIVATE_KEY=${{ secrets.CLIENT_SECRET_PRIVATE_KEY }} >> .env
-          echo CLIENT_SECRET_CLIENT_EMAIL=${{ secrets.CLIENT_SECRET_CLIENT_EMAIL }} >> .env
-          echo CLIENT_SECRET_CLIENT_ID=${{ secrets.CLIENT_SECRET_CLIENT_ID }} >> .env
-          echo CLIENT_SECRET_CLIENT_x509_CERT_URL=${{ secrets.CLIENT_SECRET_CLIENT_x509_CERT_URL }} >> .env
+          echo CLIENT_SECRET_PROJECT_ID="${{ secrets.CLIENT_SECRET_PROJECT_ID }}" >> .env
+          echo CLIENT_SECRET_PRIIVATE_KEY_ID="${{ secrets.CLIENT_SECRET_PRIIVATE_KEY_ID }}" >> .env
+          echo CLIENT_SECRET_PRIVATE_KEY="${{ secrets.CLIENT_SECRET_PRIVATE_KEY }}" >> .env
+          echo CLIENT_SECRET_CLIENT_EMAIL="${{ secrets.CLIENT_SECRET_CLIENT_EMAIL }}" >> .env
+          echo CLIENT_SECRET_CLIENT_ID="${{ secrets.CLIENT_SECRET_CLIENT_ID }}" >> .env
+          echo CLIENT_SECRET_CLIENT_x509_CERT_URL="${{ secrets.CLIENT_SECRET_CLIENT_x509_CERT_URL }}" >> .env
 
       - name: Test with pytest
         run: |
