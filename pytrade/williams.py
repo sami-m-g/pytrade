@@ -44,9 +44,9 @@ class Williams:
     def get_status(self) -> WilliamsStatus:
         current_wr = self.data["WR"][-1]
         previous_wr = self.data["WR"][-2]
-        if previous_wr < self.overbought and current_wr > self.overbought:
+        if previous_wr > self.overbought and current_wr < self.overbought:
             return WilliamsStatus.BUY.name
-        if previous_wr > self.oversold and current_wr < self.oversold:
+        if previous_wr < self.oversold and current_wr > self.oversold:
             return WilliamsStatus.SELL.name
         return WilliamsStatus.GRAY.name
 
