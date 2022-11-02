@@ -54,6 +54,15 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
+      - name: Export environment variables to .env file
+        run: |
+          echo CLIENT_SECRET_PROJECT_ID=${{ secrets.CLIENT_SECRET_PROJECT_ID }}
+          echo CLIENT_SECRET_PRIIVATE_KEY_ID=${{ secrets.CLIENT_SECRET_PRIIVATE_KEY_ID }}
+          echo CLIENT_SECRET_PRIVATE_KEY=${{ secrets.CLIENT_SECRET_PRIVATE_KEY }}
+          echo CLIENT_SECRET_CLIENT_EMAIL=${{ secrets.CLIENT_SECRET_CLIENT_EMAIL }}
+          echo CLIENT_SECRET_CLIENT_ID=${{ secrets.CLIENT_SECRET_CLIENT_ID }}
+          echo CLIENT_SECRET_CLIENT_x509_CERT_URL=${{ secrets.CLIENT_SECRET_CLIENT_x509_CERT_URL }}
+
       - name: Test with pytest
         run: |
           python -m pytest
