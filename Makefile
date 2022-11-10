@@ -5,6 +5,6 @@ test:
 	python -m pytest
 
 run:
-	python -m flask --app pytrade --debug run
+	python -m flask --debug run
 
 .PHONY: init test run
