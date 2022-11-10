@@ -1,7 +1,7 @@
 import pandas as pd
 
 from pytrade.loader import YahooFinanceLoader
-from pytrade.williams import Williams
+from pytrade.williams import Williams, WilliamsParams
 from pytrade.helpers import GoogleSheetsHelper
 
 
@@ -23,10 +23,8 @@ class Trader:
     DEFAULT_INTERVALS = ["1mo", "1wk", "1d"]
 
     def __init__(
-        self, tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
-        williams_short_lookback: int = 20, williams_short_overbought: int = -20, williams_short_oversold: int = -80,
-        williams_long_lookback: int = 50, williams_long_overbought: int = -20, williams_long_oversold: int = -80,
-        williams_nmovements: int = 4, google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
+        self, williams_params: list[WilliamsParams], tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS,
+        period: str = "7y", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
         google_tickers_worksheet_title: str = "Tickers"
     ) -> "Trader":
         if tickers is None:
@@ -34,31 +32,11 @@ class Trader:
         else:
             self.tickers = tickers
 
+        self.williams_params = williams_params
         self.intervals = intervals
         self.period = period
-        self.williams_short_lookback = williams_short_lookback
-        self.williams_short_overbought = williams_short_overbought
-        self.williams_short_oversold = williams_short_oversold
-        self.williams_long_lookback = williams_long_lookback
-        self.williams_long_overbought = williams_long_overbought
-        self.williams_long_oversold = williams_long_oversold
-        self.williams_nmovements = williams_nmovements
         self.google_spreadsheet_title = google_spreadsheet_title
         self.google_out_worksheet_title = google_out_worksheet_title
-    
-    def get_short_williams(self, data: pd.DataFrame, ticker: str, interval: str) -> list[list[any]]:
-        williams = Williams(
-            data, self.williams_short_lookback, self.williams_short_overbought, self.williams_short_oversold, self.williams_nmovements
-        )
-        name = f"short_williams_{self.williams_short_lookback}_{self.williams_short_overbought}_{self.williams_short_oversold}"
-        return [[ticker, interval, williams.get_last_interval(), name, williams.get_status(), williams.get_position(), williams.get_movements()]]
-
-    def get_long_williams(self, data: pd.DataFrame, ticker: str, interval: str) -> list[list[any]]:
-        williams = Williams(
-            data, self.williams_long_lookback, self.williams_long_overbought, self.williams_long_oversold, self.williams_nmovements
-        )
-        name = f"long_williams_{self.williams_long_lookback}_{self.williams_long_overbought}_{self.williams_long_oversold}"
-        return [[ticker, interval, williams.get_last_interval(), name, williams.get_status(), williams.get_position(), williams.get_movements()]]
 
     def trade(self) -> None:
         output_fields = ["ticker", "interval", "last_interval", "signal", "status", "position", "movements"]
@@ -67,12 +45,8 @@ class Trader:
         for ticker in self.tickers:
             for interval in self.intervals:
                 data = YahooFinanceLoader.get_historical_data(ticker, self.period, interval)
-                short_williams_data = self.get_short_williams(data, ticker, interval)
-                long_williams_data = self.get_long_williams(data, ticker, interval)
-                output_df = pd.concat([
-                    output_df,
-                    pd.DataFrame(short_williams_data, columns=output_fields),
-                    pd.DataFrame(long_williams_data, columns=output_fields)
-                ]) 
-
+                for williams_param in self.williams_params:
+                    william_data = [ticker, interval]
+                    william_data.extend(Williams(data, williams_param).to_list())
+                    output_df = pd.concat([output_df, pd.DataFrame([william_data], columns=output_fields)]) 
         GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)

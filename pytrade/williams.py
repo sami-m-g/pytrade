@@ -1,36 +1,24 @@
-from enum import Enum
-
 import pandas as pd
 
-
-class WilliamsStatus(Enum):
-    SELL = -1
-    BUY = 1
-    GRAY = 0
-
-
-class WilliamsPosition(Enum):
-    OVERSOLD = 1
-    OVERBOUGHT = -1
-    MIDDLE = 0
-
-
-class WilliamsMovement(Enum):
-    UP = "U"
-    DOWN = "D"
+from pytrade.enums import WilliamsMovement, WilliamsPosition, WilliamsStatus
+from pytrade.model import WilliamsParams
 
 
 class Williams:
     def __init__(
-        self, data: pd.DataFrame, lookback: int, overbought: int, oversold: int, movements: int, 
+        self, data: pd.DataFrame, williams_params: WilliamsParams
     ) -> "Williams":
         self.data = data
-        self.lookback = lookback
-        self.movements = movements
-        self.overbought = overbought
-        self.oversold = oversold
+        self.lookback = williams_params.lookback
+        self.overbought = williams_params.overbought
+        self.oversold = williams_params.oversold
+        self.movements = williams_params.movements
+        self.type = williams_params.type
 
         self.get_wr()
+
+    def get_name(self) -> str:
+        return f"{self.type.value}_{self.lookback}_{self.overbought}_{self.oversold}"
 
     def get_wr(self) -> None:
         high = self.data["High"].rolling(self.lookback).max() 
@@ -63,3 +51,6 @@ class Williams:
         return "".join(
             [WilliamsMovement.UP.value if wr[-i] > wr[-i-1] else WilliamsMovement.DOWN.value for i in range(self.movements, 0, -1)]
         )
+    
+    def to_list(self) -> list[any]:
+        return [self.get_last_interval(), self.get_name(), self.get_status(), self.get_position(), self.get_movements()]
