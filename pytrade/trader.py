@@ -39,7 +39,7 @@ class Trader:
         self.google_out_worksheet_title = google_out_worksheet_title
 
     def trade(self) -> None:
-        output_fields = ["ticker", "interval", "last_interval", "signal", "status", "position", "movements"]
+        output_fields = ["ticker", "interval", "last_interval", "signal", "reading", "status", "position", "movements"]
         output_df = pd.DataFrame([], columns=output_fields)
 
         for ticker in self.tickers:
