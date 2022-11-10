@@ -23,9 +23,8 @@ class Trader:
     DEFAULT_INTERVALS = ["1mo", "1wk", "1d"]
 
     def __init__(
-        self, williams_params: list[WilliamsParams], williams_buy_threshold: float, williams_sell_threshold: float,
-        tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
-        google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
+        self, williams_params: list[WilliamsParams], tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS,
+        period: str = "7y", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
         google_tickers_worksheet_title: str = "Tickers"
     ) -> "Trader":
         if tickers is None:
@@ -34,8 +33,6 @@ class Trader:
             self.tickers = tickers
 
         self.williams_params = williams_params
-        self.williams_buy_threshold = williams_buy_threshold
-        self.williams_sell_threshold = williams_sell_threshold
         self.intervals = intervals
         self.period = period
         self.google_spreadsheet_title = google_spreadsheet_title
@@ -62,6 +59,6 @@ class Trader:
                     william_data = [ticker, interval]
                     william_data.extend(williams.to_list())
                     output_df = pd.concat([output_df, pd.DataFrame([william_data], columns=output_fields)], ignore_index=True)
-                    williams_buy_sells.append(williams.get_buy_sell(self.williams_buy_threshold, self.williams_sell_threshold))
+                    williams_buy_sells.append(williams.get_buy_sell())
                 Trader.add_williams_buy_sell(output_df, williams_buy_sells)
         GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)

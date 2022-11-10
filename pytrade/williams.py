@@ -14,6 +14,8 @@ class Williams:
         self.oversold = williams_params.oversold
         self.movements = williams_params.movements
         self.type = williams_params.type
+        self.buy_threshold = williams_params.buy_threshold
+        self.sell_threshold = williams_params.sell_threshold
 
         self.get_wr()
 
@@ -55,12 +57,12 @@ class Williams:
             [WilliamsMovement.UP.value if wr[-i] > wr[-i-1] else WilliamsMovement.DOWN.value for i in range(self.movements, 0, -1)]
         )
     
-    def get_buy_sell(self, williams_buy_threshold: float, williams_sell_threshold: float) -> WilliamsStatus:
+    def get_buy_sell(self) -> WilliamsStatus:
         current_close = self.data.Close[-1]
         previous_close = self.data.Close[-2]
-        if current_close > previous_close and self.get_reading() < williams_buy_threshold:
+        if current_close > previous_close and self.get_reading() < self.buy_threshold:
             return WilliamsStatus.BUY
-        if current_close < previous_close > williams_sell_threshold:
+        if current_close < previous_close > self.sell_threshold:
             return WilliamsStatus.SELL
         return WilliamsStatus.GRAY
 

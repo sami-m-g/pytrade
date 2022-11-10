@@ -21,14 +21,14 @@ def trade():
             int(request.form[f"{type.value}_lookback"]),
             int(request.form[f"{type.value}_overbought"]),
             int(request.form[f"{type.value}_oversold"]),
-            type
+            type,
+            float(request.form[f"{type.value}_buy_threshold"]),
+            float(request.form[f"{type.value}_sell_threshold"]),
         )
         for type in WilliamsType
     ]
     Trader(
         tickers=None,
-        williams_buy_threshold=float(request.form["williams_buy_threshold"]),
-        williams_sell_threshold=float(request.form["williams_sell_threshold"]),
         intervals=request.form.getlist("intervals"),
         williams_params=williams_params
     ).trade()
