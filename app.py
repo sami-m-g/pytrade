@@ -27,6 +27,8 @@ def trade():
     ]
     Trader(
         tickers=None,
+        williams_buy_threshold=float(request.form["williams_buy_threshold"]),
+        williams_sell_threshold=float(request.form["williams_sell_threshold"]),
         intervals=request.form.getlist("intervals"),
         williams_params=williams_params
     ).trade()

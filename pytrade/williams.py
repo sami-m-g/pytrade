@@ -24,7 +24,7 @@ class Williams:
         high = self.data["High"].rolling(self.lookback).max() 
         low = self.data["Low"].rolling(self.lookback).min()
         close = self.data["Close"]
-        self.data.WR = -100 * ((high - close) / (high - low))
+        self.data["WR"] = -100 * ((high - close) / (high - low))
 
     def get_last_interval(self) -> str:
         return self.data.index[-1]
@@ -55,5 +55,14 @@ class Williams:
             [WilliamsMovement.UP.value if wr[-i] > wr[-i-1] else WilliamsMovement.DOWN.value for i in range(self.movements, 0, -1)]
         )
     
+    def get_buy_sell(self, williams_buy_threshold: float, williams_sell_threshold: float) -> WilliamsStatus:
+        current_close = self.data.Close[-1]
+        previous_close = self.data.Close[-2]
+        if current_close > previous_close and self.get_reading() < williams_buy_threshold:
+            return WilliamsStatus.BUY
+        if current_close < previous_close > williams_sell_threshold:
+            return WilliamsStatus.SELL
+        return WilliamsStatus.GRAY
+
     def to_list(self) -> list[any]:
-        return [self.get_last_interval(), self.get_name(), self.get_reading(), self.get_status(), self.get_position(), self.get_movements()]
+        return [self.get_last_interval(), self.get_name(), self.get_reading(), self.get_status(), "", self.get_position(), self.get_movements()]
