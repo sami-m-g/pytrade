@@ -30,7 +30,8 @@ def trade():
     Trader(
         tickers=None,
         intervals=request.form.getlist("intervals"),
-        williams_params=williams_params
+        williams_params=williams_params,
+        google_tickers_worksheet_title=request.form["google_tickers_worksheet_title"]
     ).trade()
     return "Processing done!"
 
