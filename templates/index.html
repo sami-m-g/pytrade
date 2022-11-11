@@ -5,20 +5,20 @@
         <option value="{{ interval[0] }}" {% if interval[1]%} selected {% endif %}>{{interval[0]}}</option>
         {% endfor %}
     </select>
-    <p>williams_short_lookback <input type="number" name="williams_short_lookback" value="14" /></p>
+    <p>williams_short_lookback <input type="number" name="williams_short_lookback" value="5" /></p>
     <p>williams_short_overbought <input type="number" name="williams_short_overbought" value="-20" /></p>
     <p>williams_short_oversold <input type="number" name="williams_short_oversold" value="-80" /></p>
-    <p>williams_short_buy_threshold <input type="number" name="williams_short_buy_threshold" value="-20" /></p>
+    <p>williams_short_buy_threshold <input type="number" name="williams_short_buy_threshold" value="-40" /></p>
     <p>williams_short_sell_threshold <input type="number" name="williams_short_sell_threshold" value="-80" /></p>
-    <p>williams_medium_lookback <input type="number" name="williams_medium_lookback" value="20" /></p>
+    <p>williams_medium_lookback <input type="number" name="williams_medium_lookback" value="75" /></p>
     <p>williams_medium_overbought <input type="number" name="williams_medium_overbought" value="-20" /></p>
     <p>williams_medium_oversold <input type="number" name="williams_medium_oversold" value="-80" /></p>
-    <p>williams_medium_buy_threshold <input type="number" name="williams_medium_buy_threshold" value="-20" /></p>
+    <p>williams_medium_buy_threshold <input type="number" name="williams_medium_buy_threshold" value="-16" /></p>
     <p>williams_medium_sell_threshold <input type="number" name="williams_medium_sell_threshold" value="-80" /></p>
-    <p>williams_long_lookback <input type="number" name="williams_long_lookback" value="50" /></p>
+    <p>williams_long_lookback <input type="number" name="williams_long_lookback" value="100" /></p>
     <p>williams_long_overbought <input type="number" name="williams_long_overbought" value="-20" /></p>
     <p>williams_long_oversold <input type="number" name="williams_long_oversold" value="-80" /></p>
-    <p>williams_long_buy_threshold <input type="number" name="williams_long_buy_threshold" value="-20" /></p>
+    <p>williams_long_buy_threshold <input type="number" name="williams_long_buy_threshold" value="-12" /></p>
     <p>williams_long_sell_threshold <input type="number" name="williams_long_sell_threshold" value="-80" /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
