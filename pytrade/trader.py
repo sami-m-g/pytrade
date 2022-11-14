@@ -1,4 +1,5 @@
 import pandas as pd
+from flask import Flask
 
 from pytrade.loader import YahooFinanceLoader
 from pytrade.williams import Williams, WilliamsParams, WilliamsStatus
@@ -23,15 +24,16 @@ class Trader:
     DEFAULT_INTERVALS = ["1mo", "1wk", "1d"]
 
     def __init__(
-        self, williams_params: list[WilliamsParams], tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS,
-        period: str = "7y", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
-        google_tickers_worksheet_title: str = "Tickers"
+        self, flask_app: Flask, williams_params: list[WilliamsParams], tickers: list[str] = DEFAULT_TICKERS,
+        intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y", google_spreadsheet_title: str = "StartInvesting",
+        google_out_worksheet_title: str = "SIGNALS", google_tickers_worksheet_title: str = "Tickers"
     ) -> "Trader":
         if tickers is None:
             self.tickers = GoogleSheetsHelper.read_tickers(google_spreadsheet_title, google_tickers_worksheet_title)
         else:
             self.tickers = tickers
 
+        self.flask_app = flask_app
         self.williams_params = williams_params
         self.intervals = intervals
         self.period = period
@@ -51,6 +53,7 @@ class Trader:
         output_df = pd.DataFrame([], columns=output_fields)
 
         for ticker in self.tickers:
+            self.flask_app.logger.debug(f"Processing: {ticker}...")
             for interval in self.intervals:
                 data = YahooFinanceLoader.get_historical_data(ticker, self.period, interval)
                 williams_buy_sells: list[WilliamsStatus] = []

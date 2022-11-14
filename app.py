@@ -28,6 +28,7 @@ def trade():
         for type in WilliamsType
     ]
     Trader(
+        app,
         tickers=None,
         intervals=request.form.getlist("intervals"),
         williams_params=williams_params,
