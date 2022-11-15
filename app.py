@@ -30,6 +30,8 @@ def trade():
     Trader(
         app,
         tickers=None,
+        hull_ma_period=int(request.form["hull_ma_period"]),
+        hull_ma_limit=float(request.form["hull_ma_limit"]),
         intervals=request.form.getlist("intervals"),
         williams_params=williams_params,
         google_tickers_worksheet_title=request.form["google_tickers_worksheet_title"]

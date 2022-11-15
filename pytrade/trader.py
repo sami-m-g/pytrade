@@ -1,9 +1,10 @@
 import pandas as pd
 from flask import Flask
 
+from pytrade.helpers import GoogleSheetsHelper
+from pytrade.hull_ma import HullMA
 from pytrade.loader import YahooFinanceLoader
 from pytrade.williams import Williams, WilliamsParams, WilliamsStatus
-from pytrade.helpers import GoogleSheetsHelper
 
 
 class Trader:
@@ -24,9 +25,10 @@ class Trader:
     DEFAULT_INTERVALS = ["1mo", "1wk", "1d"]
 
     def __init__(
-        self, flask_app: Flask, williams_params: list[WilliamsParams], tickers: list[str] = DEFAULT_TICKERS,
-        intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y", google_spreadsheet_title: str = "StartInvesting",
-        google_out_worksheet_title: str = "SIGNALS", google_tickers_worksheet_title: str = "Tickers"
+        self, flask_app: Flask, williams_params: list[WilliamsParams], hull_ma_period: int, hull_ma_limit: float,
+        tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
+        google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "SIGNALS",
+        google_tickers_worksheet_title: str = "Tickers"
     ) -> "Trader":
         if tickers is None:
             self.tickers = GoogleSheetsHelper.read_tickers(google_spreadsheet_title, google_tickers_worksheet_title)
@@ -35,6 +37,8 @@ class Trader:
 
         self.flask_app = flask_app
         self.williams_params = williams_params
+        self.hull_ma_period = hull_ma_period
+        self.hull_ma_limit = hull_ma_limit
         self.intervals = intervals
         self.period = period
         self.google_spreadsheet_title = google_spreadsheet_title
@@ -64,4 +68,8 @@ class Trader:
                     output_df = pd.concat([output_df, pd.DataFrame([william_data], columns=output_fields)], ignore_index=True)
                     williams_buy_sells.append(williams.get_buy_sell())
                 Trader.add_williams_buy_sell(output_df, williams_buy_sells)
+                hull_ma = HullMA(data, self.hull_ma_period, self.hull_ma_limit)
+                hull_ma_data = [ticker, interval]
+                hull_ma_data.extend(hull_ma.to_list())
+                output_df = pd.concat([output_df, pd.DataFrame([hull_ma_data], columns=output_fields)], ignore_index=True)
         GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)
