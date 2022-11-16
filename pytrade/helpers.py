@@ -16,15 +16,25 @@ class GoogleSheetsHelper:
         return gspread.service_account_from_dict(ClientSecret.to_json(), scopes=scopes)
 
     @staticmethod
-    def get_worksheet(spreadsheet_title: str, worksheet_title: str) -> tuple[gspread.Spreadsheet, gspread.Worksheet]:
+    def get_worksheet(
+        spreadsheet_title: str, worksheet_title: str, add_if_not_exist: bool = False
+    ) -> tuple[gspread.Spreadsheet, gspread.Worksheet]:
         client = GoogleSheetsHelper.get_service_account()
         spreadsheet = client.open(spreadsheet_title)
-        worksheet = spreadsheet.worksheet(worksheet_title)
+
+        try:
+            worksheet = spreadsheet.worksheet(worksheet_title)
+        except gspread.WorksheetNotFound:
+            if add_if_not_exist:
+                worksheet = spreadsheet.add_worksheet(worksheet_title, 0, 0, 0)
+            else:
+                raise gspread.WorksheetNotFound
+
         return spreadsheet, worksheet
 
     @staticmethod
     def write_data(data: pd.DataFrame, spreadsheet_title: str, worksheet_title: str) -> None:
-        spreadsheet, worksheet = GoogleSheetsHelper.get_worksheet(spreadsheet_title, worksheet_title)
+        spreadsheet, worksheet = GoogleSheetsHelper.get_worksheet(spreadsheet_title, worksheet_title, add_if_not_exist=True)
         gspread_dataframe.set_with_dataframe(worksheet, data, include_column_header=True, resize=True)
 
     @staticmethod

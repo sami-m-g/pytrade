@@ -34,7 +34,8 @@ def trade():
         hull_ma_limit=float(request.form["hull_ma_limit"]),
         intervals=request.form.getlist("intervals"),
         williams_params=williams_params,
-        google_tickers_worksheet_title=request.form["google_tickers_worksheet_title"]
+        google_tickers_worksheet_title=request.form["google_tickers_worksheet_title"],
+        google_out_worksheet_title=request.form["google_out_worksheet_title"]
     ).trade()
     return "Processing done!"
 
