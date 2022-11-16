@@ -16,19 +16,26 @@ class DataInterval(Enum):
     MONTH_3 = "3mo"
 
 
-class WilliamsStatus(Enum):
+class SignalStatus(Enum):
     SELL = -1
     BUY = 1
     GRAY = 0
+    EMPTY = 999
 
 
-class WilliamsPosition(Enum):
+class SignalPosition(Enum):
     OVERSOLD = 1
     OVERBOUGHT = -1
     MIDDLE = 0
+    SIDEWAYS = 10
+    SIDEWAYS_UP = 11
+    SIDEWAYS_DOWN = -11
+    TRENDING_UP = 12
+    TRENDING_DOWN = -12
+    EMPTY = 999
 
 
-class WilliamsMovement(Enum):
+class SignalMovement(Enum):
     UP = "U"
     DOWN = "D"
 

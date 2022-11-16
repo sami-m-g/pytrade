@@ -1,10 +1,11 @@
 import pandas as pd
 from flask import Flask
 
+from pytrade.enums import SignalStatus
 from pytrade.helpers import GoogleSheetsHelper
-from pytrade.hull_ma import HullMA
 from pytrade.loader import YahooFinanceLoader
-from pytrade.williams import Williams, WilliamsParams, WilliamsStatus
+from pytrade.model import WilliamsParams
+from pytrade.signal import HullMASignal, WilliamsSignal
 
 
 class Trader:
@@ -45,11 +46,11 @@ class Trader:
         self.google_out_worksheet_title = google_out_worksheet_title
 
     @staticmethod
-    def add_williams_buy_sell(data: pd.DataFrame, williams_buy_sells: list[WilliamsStatus]) -> None:
+    def add_williams_buy_sell(data: pd.DataFrame, williams_buy_sells: list[SignalStatus]) -> None:
         if williams_buy_sells.count(williams_buy_sells[0]) == len(williams_buy_sells):
             buy_sell = williams_buy_sells[0].name 
         else:
-            buy_sell =  WilliamsStatus.GRAY.name
+            buy_sell =  SignalStatus.GRAY.name
         data.at[data.shape[0] - 1, "buy/sell"] = buy_sell
  
     def trade(self) -> None:
@@ -60,15 +61,15 @@ class Trader:
             self.flask_app.logger.debug(f"Processing: {ticker}...")
             for interval in self.intervals:
                 data = YahooFinanceLoader.get_historical_data(ticker, self.period, interval)
-                williams_buy_sells: list[WilliamsStatus] = []
+                williams_buy_sells: list[SignalStatus] = []
                 for williams_param in self.williams_params:
-                    williams = Williams(data, williams_param)
+                    williams = WilliamsSignal(data, williams_param)
                     william_data = [ticker, interval]
                     william_data.extend(williams.to_list())
                     output_df = pd.concat([output_df, pd.DataFrame([william_data], columns=output_fields)], ignore_index=True)
                     williams_buy_sells.append(williams.get_buy_sell())
                 Trader.add_williams_buy_sell(output_df, williams_buy_sells)
-                hull_ma = HullMA(data, self.hull_ma_period, self.hull_ma_limit)
+                hull_ma = HullMASignal(data, self.hull_ma_period, self.hull_ma_limit)
                 hull_ma_data = [ticker, interval]
                 hull_ma_data.extend(hull_ma.to_list())
                 output_df = pd.concat([output_df, pd.DataFrame([hull_ma_data], columns=output_fields)], ignore_index=True)
