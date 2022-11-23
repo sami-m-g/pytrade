@@ -130,22 +130,13 @@ class WilliamsSignal(Signal):
         self.data["WR"] = -100 * ((high - close) / (high - low))
         self.signal = self.data.WR
     
-    def get_status(self) -> SignalStatus:
+    def get_buy_sell(self) -> SignalStatus:
         current_wr = self.data.WR[-1]
         previous_wr = self.data.WR[-2]
         if previous_wr > self.overbought and current_wr < self.overbought:
             return SignalStatus.SELL
         if previous_wr < self.oversold and current_wr > self.oversold:
             return SignalStatus.BUY
-        return SignalStatus.GRAY
-
-    def get_buy_sell(self) -> SignalStatus:
-        current_close = self.data.Close[-1]
-        previous_close = self.data.Close[-2]
-        if current_close > previous_close and self.get_reading() < self.buy_threshold:
-            return SignalStatus.BUY
-        if current_close < previous_close and self.get_reading() > self.sell_threshold:
-            return SignalStatus.SELL
         return SignalStatus.GRAY
 
     def get_position(self) -> SignalPosition:
