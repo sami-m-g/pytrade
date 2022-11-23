@@ -20,6 +20,8 @@ class SignalStatus(Enum):
     SELL = -1
     BUY = 1
     GRAY = 0
+    HOLD = -2
+    STAY_OUT = 2
     EMPTY = 999
 
 

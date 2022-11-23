@@ -70,6 +70,17 @@ class HullMASignal(Signal):
     def calculate(self) -> None:
         self.signal = HullMASignal.calculate_hma(self.data.Close, self.period)
 
+    def get_status(self) -> SignalStatus:
+        hma = self.get_reading()
+        open, close = self.data.Open[-1], self.data.Close[-1]
+        if close > hma and open > hma:
+            return SignalStatus.HOLD
+        if close < hma < open:
+            return SignalStatus.SELL
+        if close > hma > open:
+            return SignalStatus.BUY
+        return SignalStatus.STAY_OUT
+
     def get_buy_sell(self) -> SignalStatus:
         last_close = self.data.Close[-1]
         hma = self.get_reading()
