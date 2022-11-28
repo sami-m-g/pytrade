@@ -45,6 +45,8 @@ class Trader:
         self.google_spreadsheet_title = google_spreadsheet_title
         self.google_out_worksheet_title = google_out_worksheet_title
 
+        self.loader = YahooFinanceLoader()
+
     @staticmethod
     def add_williams_buy_sell(data: pd.DataFrame, williams_buy_sells: list[SignalStatus]) -> None:
         if williams_buy_sells.count(williams_buy_sells[0]) == len(williams_buy_sells):
@@ -60,7 +62,7 @@ class Trader:
         for ticker in self.tickers:
             self.flask_app.logger.debug(f"Processing: {ticker}...")
             for interval in self.intervals:
-                data = YahooFinanceLoader.get_historical_data(ticker, self.period, interval)
+                data = self.loader.get_ticker_data(ticker, self.period, interval)
                 williams_buy_sells: list[SignalStatus] = []
                 for williams_param in self.williams_params:
                     williams = WilliamsSignal(data, williams_param)
