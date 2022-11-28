@@ -13,23 +13,23 @@ class TestWilliamsSignal(unittest.TestCase):
         index = pd.Index(rows, name="Date")
         return pd.DataFrame(rows, columns=data_columns, index=index)
     
-    def test_get_status_sell(self) -> None:
+    def test_get_buy_sell_sell(self) -> None:
         rows = [[2, 1, 1.9], [2, 1, 1.7]]
         data = self.get_data(rows)
         williams = WilliamsSignal(data, WilliamsParams(1, -20, -80, WilliamsType.SHORT, 0, 0))
-        self.assertEqual(SignalStatus.SELL, williams.get_status())
+        self.assertEqual(SignalStatus.SELL, williams.get_buy_sell())
     
-    def test_get_status_buy(self) -> None:
+    def test_get_buy_sell_buy(self) -> None:
         rows = [[2, 1, 1.1], [2, 1, 1.5]]
         data = self.get_data(rows)
         williams = WilliamsSignal(data, WilliamsParams(1, -20, -80, WilliamsType.SHORT, 0, 0))
-        self.assertEqual(SignalStatus.BUY, williams.get_status())
+        self.assertEqual(SignalStatus.BUY, williams.get_buy_sell())
 
-    def test_get_status_gray(self) -> None:
+    def test_get_buy_sell_gray(self) -> None:
         rows = [[2, 1, 1.3], [2, 1, 1.5]]
         data = self.get_data(rows)
         williams = WilliamsSignal(data, WilliamsParams(1, -20, -80, WilliamsType.SHORT, 0, 0))
-        self.assertEqual(SignalStatus.GRAY, williams.get_status())
+        self.assertEqual(SignalStatus.GRAY, williams.get_buy_sell())
 
     def test_get_position_overbought(self) -> None:
         rows = [[2, 1, 1.9]]
