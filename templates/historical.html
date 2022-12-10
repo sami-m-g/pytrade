@@ -1,15 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
-<form class="process-form" action="/trade" method="post">
-    <p>last_date <input type="date" name="last_date"></p>
+<form class="process-form" action="/trade_historical" method="post">
+    <p>last_date <input type="date" name="last_date" id="last_date"></p>
     <select name="interval">
         <option disabled>Intervals</option>
         {% for interval in intervals %}
         <option value="{{ interval }}">{{interval}}</option>
         {% endfor %}
     </select>
-    <p>ticker <input type="string" name="ticker" /></p>
+    <p>number_of_intervals <input type="number" name="number_of_intervals" value=3 /></p>
+    <p>ticker <input type="string" name="ticker" value="STX40.JO" /></p>
     <p>google_out_worksheet_title <input type="string" name="google_out_worksheet_title" value="HistoricalData" /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
+
+<script>
+    document.getElementById("last_date").value = new Date().toISOString().split('T')[0];
+</script>
 {% endblock %}

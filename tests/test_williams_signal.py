@@ -4,7 +4,7 @@ import pandas as pd
 
 from pytrade.enums import SignalPosition, SignalStatus, WilliamsType
 from pytrade.model import WilliamsParams
-from pytrade.signal import Signal, WilliamsSignal
+from pytrade.signals.williams_signal import WilliamsSignal
 
 
 class TestWilliamsSignal(unittest.TestCase):

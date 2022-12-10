@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<form class="process-form" action="/trade" method="post">
+<form class="process-form" action="/trade_current" method="post">
     <select name="intervals" multiple=True>
         <option disabled>Intervals</option>
         {% for interval in intervals %}

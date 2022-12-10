@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request
 app = Flask(__name__)
 
 from pytrade.enums import DataInterval, WilliamsType 
 from pytrade.model import WilliamsParams
-from pytrade.trader import Trader
+from pytrade.traders.current_trader import CurrentTrader
+from pytrade.traders.historical_trader import HistoricalTrader
 
 
 @app.route("/")
@@ -21,8 +22,8 @@ def historical():
     return render_template("historical.html", intervals=DataInterval.as_list())
 
 
-@app.route("/trade", methods=["POST"])
-def trade():
+@app.route("/trade_current", methods=["POST"])
+def trade_current():
     williams_params= [
         WilliamsParams(
             int(request.form[f"{type.value}_lookback"]),
@@ -34,7 +35,7 @@ def trade():
         )
         for type in WilliamsType
     ]
-    Trader(
+    sheet_url = CurrentTrader(
         app,
         tickers=None,
         hull_ma_period=int(request.form["hull_ma_period"]),
@@ -44,7 +45,18 @@ def trade():
         google_tickers_worksheet_title=request.form["google_tickers_worksheet_title"],
         google_out_worksheet_title=request.form["google_out_worksheet_title"]
     ).trade()
-    return "Processing done!"
+    return redirect(sheet_url, code=302)
+
+
+@app.route("/trade_historical", methods=["POST"])
+def trade_historical():
+    sheet_url = HistoricalTrader(
+        last_date=request.form["last_date"],
+        ticker=request.form["ticker"],
+        interval=request.form["interval"],
+        google_out_worksheet_title=request.form["google_out_worksheet_title"]
+    ).trade()
+    return redirect(sheet_url, code=302)
 
 
 if __name__ == '__main__':
