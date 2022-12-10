@@ -8,8 +8,13 @@ from pytrade.trader import Trader
 
 @app.route("/")
 def index():
+    return render_template("index.html")
+
+
+@app.route("/current")
+def current():
     return render_template(
-        "index.html",
+        "current.html",
         intervals=[(interval.value, interval.value in Trader.DEFAULT_INTERVALS) for interval in DataInterval]
     )
 

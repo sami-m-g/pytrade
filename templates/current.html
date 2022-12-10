@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<form class="process-form" action="/trade" method="post">
+    <select name="intervals" multiple=True>
+        <option disabled>Intervals</option>
+        {% for interval in intervals %}
+        <option value="{{ interval[0] }}" {% if interval[1]%} selected {% endif %}>{{interval[0]}}</option>
+        {% endfor %}
+    </select>
+    <p>williams_short_lookback <input type="number" name="williams_short_lookback" value="5" /></p>
+    <p>williams_short_overbought <input type="number" name="williams_short_overbought" value="-20" /></p>
+    <p>williams_short_oversold <input type="number" name="williams_short_oversold" value="-80" /></p>
+    <p>williams_short_buy_threshold <input type="number" name="williams_short_buy_threshold" value="-40" /></p>
+    <p>williams_short_sell_threshold <input type="number" name="williams_short_sell_threshold" value="-60" /></p>
+    <p>williams_medium_lookback <input type="number" name="williams_medium_lookback" value="75" /></p>
+    <p>williams_medium_overbought <input type="number" name="williams_medium_overbought" value="-20" /></p>
+    <p>williams_medium_oversold <input type="number" name="williams_medium_oversold" value="-80" /></p>
+    <p>williams_medium_buy_threshold <input type="number" name="williams_medium_buy_threshold" value="-16" /></p>
+    <p>williams_medium_sell_threshold <input type="number" name="williams_medium_sell_threshold" value="-92" /></p>
+    <p>williams_long_lookback <input type="number" name="williams_long_lookback" value="100" /></p>
+    <p>williams_long_overbought <input type="number" name="williams_long_overbought" value="-20" /></p>
+    <p>williams_long_oversold <input type="number" name="williams_long_oversold" value="-80" /></p>
+    <p>williams_long_buy_threshold <input type="number" name="williams_long_buy_threshold" value="-12" /></p>
+    <p>williams_long_sell_threshold <input type="number" name="williams_long_sell_threshold" value="-95" /></p>
+    <p>hull_ma_period <input type="number" name="hull_ma_period" value="21" /></p>
+    <p>hull_ma_limit <input type="number" name="hull_ma_limit" value="1" /></p>
+    <p>google_tickers_worksheet_title <input type="string" name="google_tickers_worksheet_title" value="Satrix" /></p>
+    <p>google_out_worksheet_title <input type="string" name="google_out_worksheet_title" value="SatrixData" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+{% endblock %}

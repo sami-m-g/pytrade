@@ -1,0 +1,60 @@
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* CSS for header */
+.header {
+  align-items: center;
+  background-color: #f5f5f5;
+}
+
+.header .logo {
+  font-size: 50px;
+  font-family: "Lucida Handwriting", cursive;
+  color: #000;
+  text-decoration: none;
+  margin-left: 30px;
+}
+
+/* CSS for main element */
+.signals {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 40px 80px;
+}
+
+.signals .signal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.signals .signal .signal-heading {
+  font-size: 50px;
+  color: #333333;
+  text-transform: uppercase;
+  margin: 10px 0;
+  padding: 15 15px;
+}
+
+.process-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  
+}
+
+/* CSS for footer */
+.footer {
+  align-items: center;
+  background-color: #302f49;
+  padding: 40px 80px;
+}
+
+.footer .copy {
+  color: #fff;
+}
