@@ -1,7 +1,7 @@
 import pandas as pd
 from flask import Flask
 
-from pytrade.enums import SignalStatus
+from pytrade.enums import SignalStatus, DataInterval
 from pytrade.helpers import GoogleSheetsHelper
 from pytrade.loader import YahooFinanceLoader
 from pytrade.model import WilliamsParams
@@ -23,7 +23,7 @@ class Trader:
         "MRP.JO", "MTN.JO", "NPN.JO", "NED.JO", "NRP.JO", "PPH.JO", "PRX.JO", "REM.JO", "SLM.JO", "SOL.JO", "SHP.JO",
         "SSW.JO", "S32.JO", "SBK.JO", "VOD.JO", "WHL.JO"
     ]
-    DEFAULT_INTERVALS = ["1mo", "1wk", "1d"]
+    DEFAULT_INTERVALS = DataInterval.defaults()
 
     def __init__(
         self, flask_app: Flask, williams_params: list[WilliamsParams], hull_ma_period: int, hull_ma_limit: float,

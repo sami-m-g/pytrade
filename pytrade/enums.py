@@ -12,8 +12,21 @@ class DataInterval(Enum):
     DAY_1 = "1d"
     DAY_5 = "5d"
     WEEK_1 = "1wk"
-    MONTH = "1mo"
+    MONTH_1 = "1mo"
     MONTH_3 = "3mo"
+
+    @staticmethod
+    def defaults() -> list[str]:
+        return [DataInterval.MONTH_1.value, DataInterval.WEEK_1.value, DataInterval.DAY_1.value]
+
+    @staticmethod
+    def as_selected_list() -> list[tuple[str, bool]]:
+        defaults = DataInterval.defaults()
+        return [(interval.value, interval.value in defaults) for interval in DataInterval]
+    
+    @staticmethod
+    def as_list() -> list[str]:
+        return [interval.value for interval in DataInterval]
 
 
 class SignalStatus(Enum):

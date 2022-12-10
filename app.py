@@ -13,10 +13,12 @@ def index():
 
 @app.route("/current")
 def current():
-    return render_template(
-        "current.html",
-        intervals=[(interval.value, interval.value in Trader.DEFAULT_INTERVALS) for interval in DataInterval]
-    )
+    return render_template("current.html", intervals=DataInterval.as_selected_list())
+
+
+@app.route("/historical")
+def historical():
+    return render_template("historical.html", intervals=DataInterval.as_list())
 
 
 @app.route("/trade", methods=["POST"])
