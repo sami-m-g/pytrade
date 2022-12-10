@@ -100,7 +100,7 @@ class HullMASignal(Signal):
             return SignalPosition.SIDEWAYS_UP
         if -self.limit < change < 0:
             return SignalPosition.SIDEWAYS_DOWN
-        if change >= self.limit:
+        if change <= self.limit:
             return SignalPosition.TRENDING_UP
         return SignalPosition.TRENDING_DOWN
 
