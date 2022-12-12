@@ -38,7 +38,11 @@ class HistoricalTrader:
     def get_next_date_generator(self) -> None:
         step = int(self.interval[0])
         period_str = self.interval[1:]
-        if period_str == "d":
+        if period_str == "m":
+            self.time_delta = timedelta(minutes=step)
+        elif period_str == "h":
+            self.time_delta = timedelta(hours=step)
+        elif period_str == "d":
             self.time_delta = timedelta(days=step)
         elif period_str == "wk":
             self.time_delta = timedelta(weeks=step)
