@@ -1,4 +1,5 @@
-from datetime import date, timedelta
+from datetime import datetime, timedelta
+from logging import Logger
 
 import pandas as pd
 
@@ -11,12 +12,15 @@ from pytrade.signals.williams_signal import WilliamsSignal
 
 
 class HistoricalTrader:
+    FMT_DATETIME = "%Y-%m-%dT%H:%M"
+
     def __init__(
-        self, last_date: str, ticker: str, interval: str, number_of_intervals: int = 3, hull_ma_period: int = 21,
+        self, logger: Logger, last_date: str, ticker: str, interval: str, number_of_intervals: int = 3, hull_ma_period: int = 21,
         hull_ma_limit: float = 1, williams_params: WilliamsParams = WilliamsParams(75, -20, -80, WilliamsType.MEDIUM, -16, -92),
-        period: str = "7y", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "HISTORICAL_SIGNAL",
+        period: str = "max", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "HISTORICAL_SIGNAL",
     ) -> "HistoricalTrader":
-        self.last_date = last_date
+        self.logger = logger
+        self.last_date = datetime.strptime(last_date, self.FMT_DATETIME)
         self.ticker = ticker
         self.interval = interval
         self.number_of_intervals = number_of_intervals
@@ -27,13 +31,7 @@ class HistoricalTrader:
         self.google_spreadsheet_title = google_spreadsheet_title
         self.google_out_worksheet_title = google_out_worksheet_title
         self.loader = YahooFinanceLoader()
-        self.get_parsed_date()
         self.get_next_date_generator()
-
-    def get_parsed_date(self) -> None:
-        date_list = list(map(int, self.last_date.split("-")))
-        year, day, month = date_list[0], date_list[1], date_list[2]
-        self.parsed_date = date(year, month, day)
 
     def get_next_date_generator(self) -> None:
         step = int(self.interval[0])
@@ -55,9 +53,10 @@ class HistoricalTrader:
         output_fields = ["Period", "Hull Status", "Hull Reading", "Hull Position", "Williams Movement"]
         data = self.loader.get_ticker_data(self.ticker, self.period, self.interval)
         output_df = pd.DataFrame([], columns=output_fields)
+        self.logger.debug(f"Data: {data}...")
         for i in range(1, self.number_of_intervals + 1):
-            current_date = self.parsed_date - i * self.time_delta
-            current_data = data[data.index < current_date]
+            current_date = self.last_date - i * self.time_delta
+            current_data = data[data.index <= current_date]
             hull_ma = HullMASignal(current_data, self.hull_ma_period, self.hull_ma_limit)
             williams = WilliamsSignal(current_data, self.williams_params)
             output_data = [

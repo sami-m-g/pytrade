@@ -1,5 +1,6 @@
+from logging import Logger
+
 import pandas as pd
-from flask import Flask
 
 from pytrade.enums import SignalStatus, DataInterval
 from pytrade.helpers.google_sheets_helper import GoogleSheetsHelper
@@ -27,7 +28,7 @@ class CurrentTrader:
     DEFAULT_INTERVALS = DataInterval.defaults()
 
     def __init__(
-        self, flask_app: Flask, williams_params: list[WilliamsParams], hull_ma_period: int, hull_ma_limit: float,
+        self, logger: Logger, williams_params: list[WilliamsParams], hull_ma_period: int, hull_ma_limit: float,
         tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
         google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "CURENT_SIGNALS",
         google_tickers_worksheet_title: str = "Tickers"
@@ -37,7 +38,7 @@ class CurrentTrader:
         else:
             self.tickers = tickers
 
-        self.flask_app = flask_app
+        self.logger = logger
         self.williams_params = williams_params
         self.hull_ma_period = hull_ma_period
         self.hull_ma_limit = hull_ma_limit
@@ -60,7 +61,7 @@ class CurrentTrader:
         output_df = pd.DataFrame([], columns=output_fields)
 
         for ticker in self.tickers:
-            self.flask_app.logger.debug(f"Processing: {ticker}...")
+            self.logger.debug(f"Processing: {ticker}...")
             for interval in self.intervals:
                 data = self.loader.get_ticker_data(ticker, self.period, interval)
                 williams_buy_sells: list[SignalStatus] = []

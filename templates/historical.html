@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <form class="process-form" action="/trade_historical" method="post">
-    <p>last_date <input type="date" name="last_date" id="last_date"></p>
+    <p>last_date <input type="datetime-local" id="last_date" name="last_date"></p>
     <select name="interval">
         <option disabled>Intervals</option>
         {% for interval in intervals %}
@@ -15,6 +15,20 @@
 </form>
 
 <script>
-    document.getElementById("last_date").value = new Date().toISOString().split('T')[0];
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hour = now.getHours() - 2;
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var localDatetime = year + "-" +
+                      (month < 10 ? "0" + month.toString() : month) + "-" +
+                      (day < 10 ? "0" + day.toString() : day) + "T" +
+                      (hour < 10 ? "0" + hour.toString() : hour) + ":" +
+                      (minute < 10 ? "0" + minute.toString() : minute);
+    var datetimeField = document.getElementById("last_date");
+    datetimeField.value = localDatetime;
+    datetimeField.max = localDatetime
 </script>
 {% endblock %}

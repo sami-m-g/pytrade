@@ -1,10 +1,12 @@
 from flask import Flask, redirect, render_template, request
-app = Flask(__name__)
 
-from pytrade.enums import DataInterval, WilliamsType 
+from pytrade.enums import DataInterval, WilliamsType
 from pytrade.model import WilliamsParams
 from pytrade.traders.current_trader import CurrentTrader
 from pytrade.traders.historical_trader import HistoricalTrader
+
+
+app = Flask(__name__)
 
 
 @app.route("/")
@@ -24,7 +26,7 @@ def historical():
 
 @app.route("/trade_current", methods=["POST"])
 def trade_current():
-    williams_params= [
+    williams_params = [
         WilliamsParams(
             int(request.form[f"{type.value}_lookback"]),
             int(request.form[f"{type.value}_overbought"]),
@@ -36,7 +38,7 @@ def trade_current():
         for type in WilliamsType
     ]
     sheet_url = CurrentTrader(
-        app,
+        app.logger,
         tickers=None,
         hull_ma_period=int(request.form["hull_ma_period"]),
         hull_ma_limit=float(request.form["hull_ma_limit"]),
@@ -51,6 +53,7 @@ def trade_current():
 @app.route("/trade_historical", methods=["POST"])
 def trade_historical():
     sheet_url = HistoricalTrader(
+        app.logger,
         last_date=request.form["last_date"],
         ticker=request.form["ticker"],
         interval=request.form["interval"],
@@ -61,4 +64,4 @@ def trade_historical():
 
 
 if __name__ == '__main__':
-   app.run()    
+    app.run()
