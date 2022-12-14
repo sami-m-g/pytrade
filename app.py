@@ -58,7 +58,6 @@ def trade_historical():
         ticker=request.form["ticker"],
         interval=request.form["interval"],
         number_of_intervals=int(request.form["number_of_intervals"]),
-        google_out_worksheet_title=request.form["google_out_worksheet_title"]
     ).trade()
     return redirect(sheet_url, code=302)
 

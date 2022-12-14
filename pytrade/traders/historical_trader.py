@@ -12,12 +12,14 @@ from pytrade.signals.williams_signal import WilliamsSignal
 
 
 class HistoricalTrader:
+    SUFFIX_PAGE_NAME = "_HIST"
+
     FMT_DATETIME = "%Y-%m-%dT%H:%M"
 
     def __init__(
         self, logger: Logger, last_date: str, ticker: str, interval: str, number_of_intervals: int = 3, hull_ma_period: int = 21,
         hull_ma_limit: float = 1, williams_params: WilliamsParams = WilliamsParams(75, -20, -80, WilliamsType.MEDIUM, -16, -92),
-        period: str = "max", google_spreadsheet_title: str = "StartInvesting", google_out_worksheet_title: str = "HISTORICAL_SIGNAL",
+        period: str = "max", google_spreadsheet_title: str = "StartInvesting"
     ) -> "HistoricalTrader":
         self.logger = logger
         self.last_date = datetime.strptime(last_date, self.FMT_DATETIME)
@@ -29,7 +31,7 @@ class HistoricalTrader:
         self.williams_params = williams_params
         self.period = period
         self.google_spreadsheet_title = google_spreadsheet_title
-        self.google_out_worksheet_title = google_out_worksheet_title
+        self.google_out_worksheet_title = ticker + self.SUFFIX_PAGE_NAME
         self.loader = YahooFinanceLoader()
         self.get_next_date_generator()
 
