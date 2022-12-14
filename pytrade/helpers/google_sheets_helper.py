@@ -41,7 +41,7 @@ class GoogleSheetsHelper:
     def read_tickers(spreadsheet_title: str, worksheet_title: str) -> list[str]:
         spreadsheet, worksheet = GoogleSheetsHelper.get_worksheet(spreadsheet_title, worksheet_title)
         return worksheet.col_values(1)
-    
+
     @staticmethod
     def get_sheet_url(spreadsheet_title: str, worksheet_title: str) -> str:
         spreadsheet, worksheet = GoogleSheetsHelper.get_worksheet(spreadsheet_title, worksheet_title)

@@ -12,13 +12,13 @@ class TestWilliamsSignal(unittest.TestCase):
         data_columns = ["High", "Low", "Close"]
         index = pd.Index(rows, name="Date")
         return pd.DataFrame(rows, columns=data_columns, index=index)
-    
+
     def test_get_buy_sell_sell(self) -> None:
         rows = [[2, 1, 1.9], [2, 1, 1.7]]
         data = self.get_data(rows)
         williams = WilliamsSignal(data, WilliamsParams(1, -20, -80, WilliamsType.SHORT, 0, 0))
         self.assertEqual(SignalStatus.SELL, williams.get_buy_sell())
-    
+
     def test_get_buy_sell_buy(self) -> None:
         rows = [[2, 1, 1.1], [2, 1, 1.5]]
         data = self.get_data(rows)

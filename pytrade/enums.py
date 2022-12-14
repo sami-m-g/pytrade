@@ -23,7 +23,7 @@ class DataInterval(Enum):
     def as_selected_list() -> list[tuple[str, bool]]:
         defaults = DataInterval.defaults()
         return [(interval.value, interval.value in defaults) for interval in DataInterval]
-    
+
     @staticmethod
     def as_list() -> list[str]:
         return [interval.value for interval in DataInterval]

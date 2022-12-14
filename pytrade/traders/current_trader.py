@@ -26,7 +26,6 @@ class CurrentTrader:
     ]
     DEFAULT_INTERVALS = DataInterval.defaults()
 
-
     def __init__(
         self, flask_app: Flask, williams_params: list[WilliamsParams], hull_ma_period: int, hull_ma_limit: float,
         tickers: list[str] = DEFAULT_TICKERS, intervals: list[str] = DEFAULT_INTERVALS, period: str = "7y",
@@ -51,11 +50,11 @@ class CurrentTrader:
     @staticmethod
     def add_williams_buy_sell(data: pd.DataFrame, williams_buy_sells: list[SignalStatus]) -> None:
         if williams_buy_sells.count(williams_buy_sells[0]) == len(williams_buy_sells):
-            buy_sell = williams_buy_sells[0].name 
+            buy_sell = williams_buy_sells[0].name
         else:
-            buy_sell =  SignalStatus.GRAY.name
+            buy_sell = SignalStatus.GRAY.name
         data.at[data.shape[0] - 1, "buy/sell"] = buy_sell
- 
+
     def trade(self) -> str:
         output_fields = ["ticker", "interval", "last_interval", "signal", "reading", "status", "buy/sell", "position", "movements"]
         output_df = pd.DataFrame([], columns=output_fields)

@@ -24,12 +24,12 @@ class WilliamsSignal(Signal):
         return f"{self.type.value}_{self.lookback}_{self.overbought}_{self.oversold}"
 
     def calculate(self) -> None:
-        high = self.data.High.rolling(self.lookback).max() 
+        high = self.data.High.rolling(self.lookback).max()
         low = self.data.Low.rolling(self.lookback).min()
         close = self.data.Close
         self.data["WR"] = -100 * ((high - close) / (high - low))
         self.signal = self.data.WR
-    
+
     def get_buy_sell(self) -> SignalStatus:
         current_wr = self.data.WR[-1]
         previous_wr = self.data.WR[-2]
@@ -49,4 +49,4 @@ class WilliamsSignal(Signal):
 
     def get_movements(self) -> list[SignalMovement]:
         wr = self.data.WR
-        return  [SignalMovement.UP if wr[-i] > wr[-i-1] else SignalMovement.DOWN for i in range(self.movements, 0, -1)]
+        return [SignalMovement.UP if wr[-i] > wr[-i-1] else SignalMovement.DOWN for i in range(self.movements, 0, -1)]
