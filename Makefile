@@ -13,4 +13,4 @@ coverage:
 run:
 	python -m flask --debug run
 
-.PHONY: init test run
+.PHONY: init lint test coverage run
