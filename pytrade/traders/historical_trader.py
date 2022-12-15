@@ -53,7 +53,7 @@ class HistoricalTrader:
 
     def trade(self) -> str:
         output_fields = ["Period", "Hull Status", "Hull Reading", "Hull Position", "Williams Movement"]
-        data = self.loader.get_ticker_data(self.ticker, self.period, self.interval)
+        data = self.loader.get_ticker_data(self.ticker, self.period, self.interval, exclude_current_interval=False)
         output_df = pd.DataFrame([], columns=output_fields)
         self.logger.debug(f"Data: {data}...")
         for i in range(1, self.number_of_intervals + 1):
