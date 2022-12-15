@@ -51,20 +51,31 @@ class HistoricalTrader:
         else:
             raise NotImplementedError(period_str)
 
+    def get_close_above_open(self, close: float, open: float) -> str:
+        if close > open:
+            return "ABOVE"
+        if close == open:
+            return "EQUAL"
+        return "BELOW"
+
     def trade(self) -> str:
-        output_fields = ["Period", "Hull Status", "Hull Reading", "Hull Position", "Williams Movement"]
+        output_fields = [
+            "Period", "Hull Status", "Hull Reading", "Hull Position", "Williams Movement", "Close Above Open", "Close", "Open"
+        ]
         data = self.loader.get_ticker_data(self.ticker, self.period, self.interval, exclude_current_interval=False)
         output_df = pd.DataFrame([], columns=output_fields)
         self.logger.debug(f"Data: {data}...")
-        for i in range(1, self.number_of_intervals + 1):
+        for i in range(0, self.number_of_intervals):
             current_date = self.last_date - i * self.time_delta
             current_data = data[data.index <= current_date]
             hull_ma = HullMASignal(current_data, self.hull_ma_period, self.hull_ma_limit)
             williams = WilliamsSignal(current_data, self.williams_params)
+            close, open = current_data.Close[-1], current_data.Open[-1]
             output_data = [
                 current_date,
                 hull_ma.get_status().name, hull_ma.get_reading(), hull_ma.get_position().name,
-                "".join([movement.value for movement in williams.get_movements()])
+                "".join([movement.value for movement in williams.get_movements()]),
+                self.get_close_above_open(close, open), current_data.Close[-1], current_data.Open[-1]
             ]
             output_df = pd.concat([output_df, pd.DataFrame([output_data], columns=output_fields)], ignore_index=True)
         GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)
