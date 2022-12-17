@@ -52,12 +52,23 @@ def trade_current():
 
 @app.route("/trade_historical", methods=["POST"])
 def trade_historical():
+    williams_params = WilliamsParams(
+        int(request.form["williams_lookback"]),
+        int(request.form["williams_overbought"]),
+        int(request.form["williams_oversold"]),
+        type,
+        float(request.form["williams_buy_threshold"]),
+        float(request.form["williams_sell_threshold"]),
+    )
     sheet_url = HistoricalTrader(
         app.logger,
         last_date=request.form["last_date"],
         ticker=request.form["ticker"],
         interval=request.form["interval"],
         number_of_intervals=int(request.form["number_of_intervals"]),
+        williams_params=williams_params,
+        hull_ma_period=int(request.form["hull_ma_period"]),
+        hull_ma_limit=float(request.form["hull_ma_limit"])
     ).trade()
     return redirect(sheet_url, code=302)
 
