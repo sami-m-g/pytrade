@@ -53,13 +53,13 @@ class HullMASignal(Signal):
     def get_position(self) -> SignalPosition:
         current_hma = self.signal[-1]
         previous_hma = self.signal[-2]
-        change = (previous_hma - current_hma) / previous_hma * 100
+        change = (current_hma - previous_hma) / previous_hma * 100
         if change == 0:
             return SignalPosition.SIDEWAYS
-        if 0 < change < self.limit:
+        if 0 < change <= self.limit:
             return SignalPosition.SIDEWAYS_UP
-        if -self.limit < change < 0:
+        if -self.limit >= change > 0:
             return SignalPosition.SIDEWAYS_DOWN
-        if change <= self.limit:
+        if change > 0:
             return SignalPosition.TRENDING_UP
         return SignalPosition.TRENDING_DOWN
