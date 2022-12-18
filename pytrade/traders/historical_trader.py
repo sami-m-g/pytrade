@@ -60,7 +60,10 @@ class HistoricalTrader:
 
     def trade(self) -> str:
         output_fields = [
-            "Period", "Hull Status", "Hull Reading", "Hull Position", "Williams Movement", "Close Above Open", "Close", "Open"
+            "Period",
+            "Hull Status", "Hull Reading", "Hull Position",
+            "Williams Reading", "Williams Movement",
+            "Close Above Open", "Close", "Open"
         ]
         data = self.loader.get_ticker_data(self.ticker, self.period, self.interval, exclude_current_interval=False)
         output_df = pd.DataFrame([], columns=output_fields)
@@ -74,7 +77,7 @@ class HistoricalTrader:
             output_data = [
                 current_date,
                 hull_ma.get_status().name, hull_ma.get_reading(), hull_ma.get_position().name,
-                "".join([movement.value for movement in williams.get_movements()]),
+                williams.get_reading(), "".join([movement.value for movement in williams.get_movements()]),
                 self.get_close_above_open(close, open), current_data.Close[-1], current_data.Open[-1]
             ]
             output_df = pd.concat([output_df, pd.DataFrame([output_data], columns=output_fields)], ignore_index=True)
