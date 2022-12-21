@@ -49,4 +49,4 @@ class WilliamsSignal(Signal):
 
     def get_movements(self) -> list[SignalMovement]:
         wr = self.data.WR
-        return [SignalMovement.UP if wr[-i] > wr[-i-1] else SignalMovement.DOWN for i in range(self.movements, 0, -1)]
+        return [SignalMovement.UP if wr[-(i+1)] <= wr[-i] else SignalMovement.DOWN for i in range(self.movements, 0, -1)]

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from logging import Logger
 
 import pandas as pd
@@ -33,23 +33,6 @@ class HistoricalTrader:
         self.google_spreadsheet_title = google_spreadsheet_title
         self.google_out_worksheet_title = ticker + self.SUFFIX_PAGE_NAME
         self.loader = YahooFinanceLoader()
-        self.get_next_date_generator()
-
-    def get_next_date_generator(self) -> None:
-        step = int(self.interval[0])
-        period_str = self.interval[1:]
-        if period_str == "m":
-            self.time_delta = timedelta(minutes=step)
-        elif period_str == "h":
-            self.time_delta = timedelta(hours=step)
-        elif period_str == "d":
-            self.time_delta = timedelta(days=step)
-        elif period_str == "wk":
-            self.time_delta = timedelta(weeks=step)
-        elif period_str == "mo":
-            self.time_delta = timedelta(weeks=step*4)
-        else:
-            raise NotImplementedError(period_str)
 
     def get_close_above_open(self, close: float, open: float) -> str:
         if close > open:
@@ -66,20 +49,20 @@ class HistoricalTrader:
             "Close Above Open", "Close", "Open"
         ]
         data = self.loader.get_ticker_data(self.ticker, self.period, self.interval, exclude_current_interval=False)
+        data = data[data.index <= self.last_date]
         output_df = pd.DataFrame([], columns=output_fields)
         self.logger.debug(f"Data: {data}...")
         for i in range(0, self.number_of_intervals):
-            current_date = self.last_date - i * self.time_delta
-            current_data = data[data.index <= current_date]
-            hull_ma = HullMASignal(current_data, self.hull_ma_period, self.hull_ma_limit)
-            williams = WilliamsSignal(current_data, self.williams_params)
-            close, open = current_data.Close[-1], current_data.Open[-1]
+            hull_ma = HullMASignal(data, self.hull_ma_period, self.hull_ma_limit)
+            williams = WilliamsSignal(data, self.williams_params)
+            close, open = data.Close[-1], data.Open[-1]
             output_data = [
-                current_date,
+                data.index[-1],
                 hull_ma.get_status().name, hull_ma.get_reading(), hull_ma.get_position().name,
                 williams.get_reading(), "".join([movement.value for movement in williams.get_movements()]),
-                self.get_close_above_open(close, open), current_data.Close[-1], current_data.Open[-1]
+                self.get_close_above_open(close, open), data.Close[-1], data.Open[-1]
             ]
             output_df = pd.concat([output_df, pd.DataFrame([output_data], columns=output_fields)], ignore_index=True)
+            data = data[:-1]
         GoogleSheetsHelper.write_data(output_df, self.google_spreadsheet_title, self.google_out_worksheet_title)
         return GoogleSheetsHelper.get_sheet_url(self.google_spreadsheet_title, self.google_out_worksheet_title)
